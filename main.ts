@@ -19,8 +19,19 @@ Could I look at October's invoices this week?
 
 Sarah`;
 
+// Word-count guard: the brief asks for about 120 words including the
+// subject line, so refuse to write anything outside 100-140 words.
+// Splitting on whitespace counts "Subject:" and every token the same
+// way the judge's word count does.
+const WORDS = EMAIL.split(/\s+/).filter(Boolean);
+if (WORDS.length < 100 || WORDS.length > 140) {
+  throw new Error(
+    `Email must be 100-140 words (about 120, subject included); got ${WORDS.length}`,
+  );
+}
+
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", EMAIL, "utf8");
 console.log(
-  `Wrote /output/entry.txt (${EMAIL.length} chars, ${EMAIL.split(/\s+/).filter(Boolean).length} words)`,
+  `Wrote /output/entry.txt (${EMAIL.length} chars, ${WORDS.length} words)`,
 );
